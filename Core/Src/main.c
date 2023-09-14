@@ -137,7 +137,7 @@ int main(void)
 
   lora_sx1276 lora;
 
-
+  // Put the SPI pins in SPI mode
   uint8_t test_payload[2] = {0xF0,0x00};
   HAL_GPIO_WritePin(LORA_NSS_GPIO_Port, LORA_NSS_Pin, GPIO_PIN_RESET);
   HAL_SPI_Transmit(&hspi1, (uint8_t*)test_payload, 2, 0xFF);
@@ -145,25 +145,20 @@ int main(void)
 
   HAL_Delay(1000);
 
+   // SX1276 compatible module connected to SPI1, NSS pin connected to GPIO with label LORA_NSS
+   uint8_t res = lora_init(&lora, &hspi1, LORA_NSS_GPIO_Port, LORA_NSS_Pin, LORA_433_FREQUENCY);
+   if (res != LORA_OK) {
+	 printf("initialization failed \n");
+	   HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
+   }
+   else{
+	   printf("initialization sucesfful \n");
+	   HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
+   }
 
-
-
-   if(LORA_MODE == 0 || LORA_MODE == 1){
-	   // SX1276 compatible module connected to SPI1, NSS pin connected to GPIO with label LORA_NSS
-	   uint8_t res = lora_init(&lora, &hspi1, LORA_NSS_GPIO_Port, LORA_NSS_Pin, LORA_433_FREQUENCY);
-	   if (res != LORA_OK) {
-		 printf("initialization failed \n");
-		   HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
-	   }
-	   else{
-		   printf("initialization sucesfful \n");
-		   HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
-	   }
-  }
 
 
   if(LORA_MODE == 0){
-	   // Send packet can be as simple as
 	   uint8_t res2 = lora_send_packet(&lora, (uint8_t *)"test", 4);
 	   if (res2 != LORA_OK) {
 			printf("send failed \n");
@@ -175,9 +170,8 @@ int main(void)
 	   }
    }
 
+
    if(LORA_MODE == 1){
-	  // Receive buffer
-	  // Put LoRa modem into continuous receive mode
 	  lora_mode_receive_continuous(&lora);
    }
 
@@ -193,22 +187,13 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	  if(LORA_MODE == 1){
-		  // Wait for packet up to 10sec
 		  uint8_t res;
 		  uint8_t len = lora_receive_packet_blocking(&lora, buffer, sizeof(buffer), 10000, &res);
 		  if (res != LORA_OK) {
-			// Receive failed
 		  }
 		  buffer[len] = 0;  // null terminate string to print it
 		  printf("'%s'\n", buffer);
 	  }
-
-
-
-
-
-
-
   }
   /* USER CODE END 3 */
 }
