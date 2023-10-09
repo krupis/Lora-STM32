@@ -700,7 +700,8 @@ uint8_t lora_init(lora_sx1276 *lora, SPI_HandleTypeDef *spi, GPIO_TypeDef *nss_p
 
   // Set frequency
   lora_set_frequency(lora, freq);
-  lora_set_spreading_factor(lora, LORA_DEFAULT_SF);
+  //lora_set_spreading_factor(lora, LORA_DEFAULT_SF);
+  lora_set_spreading_factor(lora, 12);
   lora_set_preamble_length(lora, LORA_DEFAULT_PREAMBLE_LEN);
   // By default - explicit header mode
   lora_set_explicit_header_mode(lora);

@@ -120,7 +120,10 @@ int main(void)
    * PA5 -> A4	(SCK)
    * PA6 -> A5 	(MISO)
    * PA7 -> A6 	(MOSI)
-   *
+   * PB0 ->	D3  (RST)
+   * PB1 ->	D6  (DIO0)
+   * PB6 ->	D5  (DIO1)
+   * PB7 ->	D4  (DIO2)
    */
 
   /* Check and handle if the system was resumed from StandBy mode */
@@ -172,6 +175,7 @@ int main(void)
 
 
    if(LORA_MODE == 1){
+	  printf("enable continous lora receive \n");
 	  lora_mode_receive_continuous(&lora);
    }
 
